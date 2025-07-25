@@ -1,0 +1,14 @@
+.dots-toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 15px;
+  z-index: 9999;
+  display: none;
+  opacity: 0.95;
+}
