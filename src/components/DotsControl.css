@@ -101,7 +101,7 @@
 }
 
 /* Mobile support */
-@media (max-width: 600px) {
+@media (max-width: 767px) {
   .dots-control {
     width: 95vw !important;
     min-width: 0 !important;

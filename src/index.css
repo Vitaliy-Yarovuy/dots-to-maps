@@ -12,7 +12,7 @@ html, body {
   height: 100vh;
 }
 
-@media (max-width: 600px) {
+@media (min-width: 767px) {
   #dots-map .leaflet-control-zoom {
     font-size: 2em;
   }
