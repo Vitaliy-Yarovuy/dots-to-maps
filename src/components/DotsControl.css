@@ -12,6 +12,14 @@
   resize: none;
 }
 
+.dots-control.collapsed {
+  height: 38px !important;
+  min-height: 0 !important;
+  width:38px !important;
+  min-width: 0 !important;
+  overflow: hidden;
+}
+
 .dots-control textarea {
   flex: 1;
   resize: none;
@@ -21,7 +29,7 @@
   border-radius: 4px 4px 0 0;
 }
 
-.dots-control button {
+.dots-control .apply-btn {
   padding: 2px 10px;
   font-size: 13px;
   border-radius: 3px;
@@ -44,6 +52,23 @@
   border-radius: 2px;
 }
 
+.dots-collapse-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  z-index: 2;
+  background: #eee;
+  border: none;
+  border-radius: 3px;
+  font-size: 18px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
 .dots-editable {
   flex: 1;
   border: none;
@@ -54,6 +79,11 @@
   background: transparent;
   overflow-y: auto;
   min-height: 60px;
+}
+
+.dots-control.collapsed .dots-footer,
+.dots-control.collapsed .dots-footer.dots-editable {
+  display: none
 }
 
 .dots-footer {
@@ -68,4 +98,43 @@
   left: 0;
   background: rgba(255,255,255,0.85);
   border-radius: 0 0 4px 4px;
+}
+
+/* Mobile support */
+@media (max-width: 600px) {
+  .dots-control {
+    width: 95vw !important;
+    min-width: 0 !important;
+    min-height: 95vh;
+  }
+
+  .dots-editable {
+    font-size: 2em;
+    min-height: 80vh;
+    padding: 14px;
+  }
+
+  .dots-footer {
+    padding: 10px 16px;
+  }
+
+  .dots-control .resize-handle {
+    width: 22px;
+    height: 22px;
+  }
+
+  .dots-control.collapsed {
+    height: 56px !important;
+    width: 56px !important;
+  }
+
+  .dots-control .apply-btn,
+  .dots-control button,
+  .dots-collapse-btn {
+    font-size: 2em;
+    padding: 6px 8px;
+    min-width: 48px;
+    min-height: 48px;
+    border-radius: 8px;
+  }
 }

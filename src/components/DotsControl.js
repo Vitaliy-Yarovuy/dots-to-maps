@@ -4,27 +4,39 @@ import { markerPalette } from '../configs';
 export const DotsControl = L.Control.extend({
   options: {
     position: 'topright',
-    onApply: null // Add callback option
+    onApply: null 
   },
   onAdd: function(map) {
     const container = L.DomUtil.create('div', 'leaflet-bar dots-control');
 
-    // Use contenteditable div instead of textarea
+    const collapseBtn = L.DomUtil.create('button', 'dots-collapse-btn', container);
+    collapseBtn.innerText = '⮟';
+    collapseBtn.title = 'Collapse';
+
     const editable = L.DomUtil.create('div', 'dots-editable', container);
     editable.contentEditable = 'true';
     editable.setAttribute('placeholder', 'Enter MGRS coordinates (one per line)');
-    editable.style.minHeight = '60px';
 
-    // Create footer for the button
     const footer = L.DomUtil.create('div', 'dots-footer', container);
-
-    const button = L.DomUtil.create('button', '', footer);
+    const button = L.DomUtil.create('button', 'apply-btn', footer);
     button.innerText = 'Apply';
 
-    // Add resize handle
-    const resizeHandle = L.DomUtil.create('div', 'resize-handle', container);
+    const resizeHandle = L.DomUtil.create('div', 'resize-handle', footer);
 
-    // Resize logic (unchanged)
+    let collapsed = false;
+    collapseBtn.onclick = () => {
+      collapsed = !collapsed;
+      if (collapsed) {
+        container.classList.add('collapsed');
+        collapseBtn.innerText = '⮞';
+        collapseBtn.title = 'Expand';
+      } else {
+        container.classList.remove('collapsed');
+        collapseBtn.innerText = '⮟';
+        collapseBtn.title = 'Collapse';
+      }
+    };
+
     resizeHandle.onmousedown = function(e) {
       e.preventDefault();
       e.stopPropagation();
@@ -58,10 +70,7 @@ export const DotsControl = L.Control.extend({
     L.DomEvent.disableClickPropagation(container);
 
     button.onclick = () => {
-      // Get lines from contenteditable div
       const lines = editable.innerText.split('\n').map(line => line.trim());
-
-      // Color each line background
       editable.innerHTML = lines.map((line, idx) => {
         const color = markerPalette[idx % markerPalette.length];
         return `<div style="background:${color};padding:2px 4px;">${line || '&nbsp;'}</div>`;
