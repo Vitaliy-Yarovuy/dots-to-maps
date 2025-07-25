@@ -1,6 +1,5 @@
 import 'leaflet/dist/leaflet.css';
 import './index.css';
-import _ from 'lodash';
 import L from 'leaflet';
 import * as mgrs from 'mgrs';
 
