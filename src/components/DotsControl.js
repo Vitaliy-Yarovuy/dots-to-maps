@@ -10,7 +10,7 @@ export const DotsControl = L.Control.extend({
     const container = L.DomUtil.create('div', 'leaflet-bar dots-control');
 
     const collapseBtn = L.DomUtil.create('button', 'dots-collapse-btn', container);
-    collapseBtn.innerText = '⮟';
+    collapseBtn.innerText = '−';
     collapseBtn.title = 'Collapse';
 
     const editable = L.DomUtil.create('div', 'dots-editable', container);
@@ -28,11 +28,11 @@ export const DotsControl = L.Control.extend({
       collapsed = !collapsed;
       if (collapsed) {
         container.classList.add('collapsed');
-        collapseBtn.innerText = '⮞';
+        collapseBtn.innerText = '+';
         collapseBtn.title = 'Expand';
       } else {
         container.classList.remove('collapsed');
-        collapseBtn.innerText = '⮟';
+        collapseBtn.innerText = '−';
         collapseBtn.title = 'Collapse';
       }
     };
