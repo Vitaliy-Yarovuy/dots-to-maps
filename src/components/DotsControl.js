@@ -4,7 +4,7 @@ import { markerPalette } from '../configs';
 export const DotsControl = L.Control.extend({
   options: {
     position: 'topright',
-    onApply: null 
+    onApply: null
   },
   onAdd: function(map) {
     const container = L.DomUtil.create('div', 'leaflet-bar dots-control');
@@ -70,14 +70,8 @@ export const DotsControl = L.Control.extend({
     L.DomEvent.disableClickPropagation(container);
 
     button.onclick = () => {
-      const lines = editable.innerText.split('\n').map(line => line.trim());
-      editable.innerHTML = lines.map((line, idx) => {
-        const color = markerPalette[idx % markerPalette.length];
-        return `<div style="background:${color};padding:2px 4px;">${line || '&nbsp;'}</div>`;
-      }).join('');
-
       if (typeof this.options.onApply === 'function') {
-        this.options.onApply(lines.join('\n'));
+        editable.innerHTML = this.options.onApply(editable.innerText);
       } else {
         alert('Input Value: ' + lines.join('\n'));
       }
