@@ -72,6 +72,7 @@ map.addControl(new DotsControl({
     appliedMarkers = [];
     latLngs = [];
 
+    mgrsInput = mgrsInput.replaceAll(/[\s]+/g, ' ');
     // Normalize Cyrillic characters to Latin
     const normalizedInput = normalizeCyrillicToLatin(mgrsInput);
     let markerCount = 0;
