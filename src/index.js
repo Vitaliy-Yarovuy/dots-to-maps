@@ -2,6 +2,7 @@ import 'leaflet/dist/leaflet.css';
 import './index.css';
 import L from 'leaflet';
 import * as mgrs from 'mgrs';
+import proj4 from "proj4";
 
 import 'leaflet-range/L.Control.Range';
 import { DotsControl } from './components/DotsControl';
@@ -11,6 +12,32 @@ import { showResultToast } from './components/ResultToast';
 const mgrsRegex = /\b\d{1,2}[C-HJ-NP-X]\s*[A-HJ-NP-Z][A-HJ-NP-V]\s*(?:\d{1,5}\s*\d{1,5})\b/gi;
 // Decimal degrees lat,lon (WGS84) — latitude then longitude, comma or whitespace separated
 const latLonRegex = /([-+]?\d{1,2}(?:\.\d+)?)[,\s]+([-+]?\d{1,3}(?:\.\d+)?)/g;
+// СК-42 Gauss-Kruger format: х (easting) and у (northing) in meters
+const sk42GkRegex = /x\s*(\d{7})\s*[,;]\s*y\s*(\d{7})/gi;
+
+
+// CK42 Gauss-Krüger — 3° zone — lon0=39 — Ukraine/Donbas
+proj4.defs("CK42_DONBAS",
+  "+proj=tmerc +lat_0=0 +lon_0=39 +k=1 " +
+  "+x_0=500000 +y_0=0 " +
+  "+ellps=krass +towgs84=24,-123,-94 " +
+  "+units=m +no_defs"
+);
+
+function normalizeEasting(e) {
+  // remove zone prefix (7xxxxx → xxxxxx)
+  if (e > 1_000_000) return e % 1_000_000;
+  return e;
+}
+
+// your format: X=northing, Y=easting
+export function gk7ToWgs84(xNorthing, yEasting) {
+  const e = normalizeEasting(yEasting);
+  const n = xNorthing;
+
+  const [lon, lat] = proj4("CK42_DONBAS", "EPSG:4326", [e, n]);
+  return { lat, lon };
+}
 
 
 // Replace Cyrillic characters with Latin equivalents
@@ -129,6 +156,44 @@ map.addControl(new DotsControl({
           normalized: normalizedText,
           color: null
         });
+      }
+    }
+
+    // Detect СК-42 Gauss-Kruger coordinates (х/y format)
+    let gk;
+    while ((gk = sk42GkRegex.exec(normalizedInput)) !== null) {
+      try {
+        const x = parseInt(gk[1], 10);
+        const y = parseInt(gk[2], 10);
+        
+        // Check if this position overlaps with any existing coordinate
+        const isOverlapWithExisting = detectedPoints.some(pt => 
+          gk.index < pt.index + pt.length && gk.index + gk[0].length > pt.index
+        );
+        
+        if (isOverlapWithExisting) continue;
+        
+        // Convert Gauss-Kruger to WGS84
+        const wgs84 = gk7ToWgs84(x, y);
+        const latVal = wgs84.lat;
+        const lonVal = wgs84.lon;
+        
+        // Validate bounds
+        if (Number.isFinite(latVal) && Number.isFinite(lonVal) && Math.abs(latVal) <= 90 && Math.abs(lonVal) <= 180) {
+          const normalizedText = `х${x}, у${y}`;
+          detectedPoints.push({
+            type: 'sk42_gk',
+            index: gk.index,
+            length: gk[0].length,
+            lat: latVal,
+            lon: lonVal,
+            original: gk[0].trim(),
+            normalized: normalizedText,
+            color: null
+          });
+        }
+      } catch (e) {
+        console.error(`Failed to parse СК-42 Gauss-Kruger: ${gk[0]}`, e);
       }
     }
 
