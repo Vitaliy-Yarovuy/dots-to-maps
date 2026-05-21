@@ -105,13 +105,14 @@
   .dots-control {
     width: 95vw !important;
     min-width: 0 !important;
-    min-height: max-content !important; 
+    min-height: 90vh;
+    min-height: 90dvh;
   }
 
   .dots-editable {
     font-size: 2em;
-    min-height: 85vh;
-    min-height: 85dvh;
+    min-height: 80vh;
+    min-height: 80dvh;
     padding: 14px;
     margin-bottom: 55px;
   }
