@@ -1,4 +1,5 @@
 const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './src/index.js',
@@ -23,6 +24,16 @@ module.exports = {
       }
     ]
   },
+  plugins: [
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.resolve(__dirname, 'public'),
+          noErrorOnMissing: true,
+        }
+      ]
+    })
+  ],
   devServer: {
     open: true,             // Automatically open the browser
     hot: true,              // Automatically refresh the page whenever bundle.js 
