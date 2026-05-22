@@ -1,10 +1,10 @@
 const CACHE_NAME = 'dots-to-maps-cache-v1';
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/main.js',
-  '/manifest.json',
-  '/icon.svg'
+  './',
+  './index.html',
+  './main.js',
+  './manifest.json',
+  './icon.svg'
 ];
 
 self.addEventListener('install', (event) => {
