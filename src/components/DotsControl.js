@@ -4,7 +4,9 @@ import { markerPalette } from '../configs';
 export const DotsControl = L.Control.extend({
   options: {
     position: 'topright',
-    onApply: null
+    onApply: null,
+    initialValue: '',
+    autoApply: false
   },
   onAdd: function(map) {
     const container = L.DomUtil.create('div', 'leaflet-bar dots-control');
@@ -16,6 +18,7 @@ export const DotsControl = L.Control.extend({
     const editable = L.DomUtil.create('div', 'dots-editable', container);
     editable.contentEditable = 'true';
     editable.setAttribute('placeholder', 'Enter MGRS coordinates (one per line)');
+    editable.innerText = this.options.initialValue;
 
     const footer = L.DomUtil.create('div', 'dots-footer', container);
     const button = L.DomUtil.create('button', 'apply-btn', footer);
@@ -69,7 +72,7 @@ export const DotsControl = L.Control.extend({
 
     L.DomEvent.disableClickPropagation(container);
 
-    button.onclick = () => {
+    const applyInput = () => {
       if (typeof this.options.onApply === 'function') {
         editable.innerHTML = this.options.onApply(editable.innerText);
       } else {
@@ -77,7 +80,12 @@ export const DotsControl = L.Control.extend({
       }
     };
 
+    button.onclick = applyInput;
+
+    if (this.options.autoApply) {
+      applyInput();
+    }
+
     return container;
   }
 });
-

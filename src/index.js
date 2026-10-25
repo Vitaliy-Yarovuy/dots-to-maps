@@ -3,6 +3,7 @@ import './index.css';
 import L from 'leaflet';
 import * as mgrs from 'mgrs';
 import proj4 from "proj4";
+import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
 
 import 'leaflet-range/L.Control.Range';
 import { DotsControl } from './components/DotsControl';
@@ -93,8 +94,28 @@ L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 let appliedMarkers = [];
 let latLngs = [];
 
+const hashParams = new URLSearchParams(window.location.hash.slice(1));
+const compressedQuery = hashParams.get('qz');
+let initialQuery = null;
+
+if (compressedQuery !== null) {
+  const decompressedQuery = decompressFromEncodedURIComponent(compressedQuery);
+  if (decompressedQuery !== null) {
+    initialQuery = decompressedQuery;
+  } else {
+    console.warn('Unable to decompress the search query from the URL hash.');
+  }
+}
+
 map.addControl(new DotsControl({
+  initialValue: initialQuery || '',
+  autoApply: initialQuery !== null,
   onApply: (mgrsInput) => {
+    hashParams.set('qz', compressToEncodedURIComponent(mgrsInput));
+
+    const hash = hashParams.toString();
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${hash}`);
+
     appliedMarkers.forEach(marker => map.removeLayer(marker));
     appliedMarkers = [];
     latLngs = [];
