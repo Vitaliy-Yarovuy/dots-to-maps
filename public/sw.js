@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dots-to-maps-cache-v1';
+const CACHE_NAME = 'dots-to-maps-cache-v2';
 const ASSETS = [
   './',
   './index.html',
