@@ -5,6 +5,7 @@ export const DotsControl = L.Control.extend({
   options: {
     position: 'topright',
     onApply: null,
+    onClear: null,
     initialValue: '',
     autoApply: false
   },
@@ -21,6 +22,8 @@ export const DotsControl = L.Control.extend({
     editable.innerText = this.options.initialValue;
 
     const footer = L.DomUtil.create('div', 'dots-footer', container);
+    const clearButton = L.DomUtil.create('button', 'clear-btn', footer);
+    clearButton.innerText = 'Clear';
     const button = L.DomUtil.create('button', 'apply-btn', footer);
     button.innerText = 'Apply';
 
@@ -81,6 +84,12 @@ export const DotsControl = L.Control.extend({
     };
 
     button.onclick = applyInput;
+    clearButton.onclick = () => {
+      editable.innerText = '';
+      if (typeof this.options.onClear === 'function') {
+        this.options.onClear();
+      }
+    };
 
     if (this.options.autoApply) {
       applyInput();

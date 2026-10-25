@@ -110,6 +110,16 @@ if (compressedQuery !== null) {
 map.addControl(new DotsControl({
   initialValue: initialQuery || '',
   autoApply: initialQuery !== null,
+  onClear: () => {
+    hashParams.delete('qz');
+    hashParams.delete('q');
+    const hash = hashParams.toString();
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}${hash ? `#${hash}` : ''}`);
+
+    appliedMarkers.forEach(marker => map.removeLayer(marker));
+    appliedMarkers = [];
+    latLngs = [];
+  },
   onApply: (mgrsInput) => {
     hashParams.set('qz', compressToEncodedURIComponent(mgrsInput));
 
